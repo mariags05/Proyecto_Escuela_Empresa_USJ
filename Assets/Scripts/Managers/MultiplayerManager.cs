@@ -15,7 +15,7 @@ public class MultiplayerManager : MonoBehaviour
 
     [SerializeField] private int m_MaxPlayers = 4;
     private int m_PlayerCount = 0;
-    private PlayerController[] m_Players;
+    private BasePlayerController[] m_Players;
     #endregion
 
     private void Awake()
@@ -35,10 +35,10 @@ public class MultiplayerManager : MonoBehaviour
 
     private void Initialize()
     {
-        m_Players = new PlayerController[m_MaxPlayers];
+        m_Players = new BasePlayerController[m_MaxPlayers];
     }
 
-    public void RegisterPlayer(PlayerController player)
+    public void RegisterPlayer(BasePlayerController player)
     {
         if (m_PlayerCount < m_MaxPlayers)
         {
