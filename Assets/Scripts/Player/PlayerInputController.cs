@@ -10,7 +10,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerInput))]
-public class PlayerInputManager : MonoBehaviour
+public class PlayerInputController : MonoBehaviour
 {
     public PlayerInput PlayerInputComponent { get; private set; }
     [SerializeField] private int m_PlayerID;
