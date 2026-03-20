@@ -1,12 +1,12 @@
-using System.IO;
-using UnityEditor.SearchService;
-using UnityEngine;
 // *************************************************************** //
 // Script done by Alvaro
 // Loads and unloads the minigames scenes
 // In progress
 // The unload is left
 // *************************************************************** //
+using System.IO;
+using UnityEditor.SearchService;
+using UnityEngine;
 
 public class LevelSelectionManager : MonoBehaviour
 {
