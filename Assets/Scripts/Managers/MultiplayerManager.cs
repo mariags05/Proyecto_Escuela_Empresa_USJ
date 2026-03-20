@@ -3,6 +3,7 @@
 // Centralizes the management of players
 // In Progress
 // Instead of a GameObject array, wee should use a PlayerController array that exposes input component when implemented
+// Missing: Player disconnection, player count management, player IDs
 // *************************************************************** //
 
 using UnityEngine;
@@ -14,7 +15,7 @@ public class MultiplayerManager : MonoBehaviour
 
     [SerializeField] private int m_MaxPlayers = 4;
     private int m_PlayerCount = 0;
-    private GameObject[] m_Players;
+    private PlayerController[] m_Players;
     #endregion
 
     private void Awake()
@@ -34,10 +35,10 @@ public class MultiplayerManager : MonoBehaviour
 
     private void Initialize()
     {
-        m_Players = new GameObject[m_MaxPlayers];
+        m_Players = new PlayerController[m_MaxPlayers];
     }
 
-    public void RegisterPlayer(GameObject player)
+    public void RegisterPlayer(PlayerController player)
     {
         if (m_PlayerCount < m_MaxPlayers)
         {
