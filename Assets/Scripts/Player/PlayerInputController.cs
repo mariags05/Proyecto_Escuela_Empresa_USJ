@@ -5,10 +5,10 @@
 // To add more actions, add more InputActionReferences and corresponding callback methods in OnEnable and OnDisable
 // *************************************************************** //
 
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using System;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerInputController : MonoBehaviour
@@ -18,16 +18,20 @@ public class PlayerInputController : MonoBehaviour
 
     #region Input Actions
     [Header("Input Action References")]
-    [SerializeField] private InputActionReference m_MoveAction;
+    [SerializeField] private InputActionReference m_MoveActionRef;
+    public InputAction MoveAction { get; private set; }
     public Vector2 MoveInput { get; private set; }
     public UnityEvent<Vector2> OnMoveInput;
 
-    // Add more InputActionReferences as needed for different actions
+    // Add more InputActionReferences and InputActions
     #endregion
 
     private void Awake()
     {
         PlayerInputComponent = GetComponent<PlayerInput>();
+
+        MoveAction = GetPlayerActionByRef(m_MoveActionRef);
+        // Add more actions here as needed
 
         foreach (var device in PlayerInputComponent.devices)
         {
@@ -37,14 +41,14 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnEnable()
     {
-        SubscribeToAction(m_MoveAction, OnMovePerformed, OnMoveCanceled);
-        // Subscribe to more actions here as needed (by InputActionReference)     
+        SubscribeToAction(MoveAction, OnMovePerformed, OnMoveCanceled);
+        // Subscribe to more actions here
     }
 
     private void OnDisable()
     {
-        UnsubscribeFromAction(m_MoveAction, OnMovePerformed, OnMoveCanceled);
-        // Unsubscribe from more actions here as needed (by InputActionReference)
+        UnsubscribeFromAction(MoveAction, OnMovePerformed, OnMoveCanceled);
+        // Unsubscribe from more actions here
     }
 
     #region Input Callbacks
@@ -65,9 +69,8 @@ public class PlayerInputController : MonoBehaviour
     #endregion
 
     #region Input Action Methods
-    private void SubscribeToAction(InputActionReference actionRef, Action<InputAction.CallbackContext> onPerformed, Action<InputAction.CallbackContext> onCanceled)
+    private void SubscribeToAction(InputAction action, Action<InputAction.CallbackContext> onPerformed, Action<InputAction.CallbackContext> onCanceled)
     {
-        InputAction action = GetPlayerActionByRef(actionRef);
         if (action != null)
         {
             action.performed += onPerformed;
@@ -75,9 +78,8 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    private void UnsubscribeFromAction(InputActionReference actionRef, Action<InputAction.CallbackContext> onPerformed, Action<InputAction.CallbackContext> onCanceled)
+    private void UnsubscribeFromAction(InputAction action, Action<InputAction.CallbackContext> onPerformed, Action<InputAction.CallbackContext> onCanceled)
     {
-        InputAction action = GetPlayerActionByRef(actionRef);
         if (action != null)
         {
             action.performed -= onPerformed;
