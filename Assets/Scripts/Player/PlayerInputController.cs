@@ -26,6 +26,7 @@ public class PlayerInputController : MonoBehaviour
     // Add more InputActionReferences and InputActions
     #endregion
 
+    #region Unity Methods
     private void Awake()
     {
         PlayerInputComponent = GetComponent<PlayerInput>();
@@ -50,6 +51,7 @@ public class PlayerInputController : MonoBehaviour
         UnsubscribeFromAction(MoveAction, OnMovePerformed, OnMoveCanceled);
         // Unsubscribe from more actions here
     }
+    #endregion
 
     #region Input Callbacks
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -68,7 +70,7 @@ public class PlayerInputController : MonoBehaviour
     }
     #endregion
 
-    #region Input Action Methods
+    #region Input Action Helpers
     private void SubscribeToAction(InputAction action, Action<InputAction.CallbackContext> onPerformed, Action<InputAction.CallbackContext> onCanceled)
     {
         if (action != null)
@@ -106,7 +108,7 @@ public class PlayerInputController : MonoBehaviour
         InputAction playerAction = PlayerInputComponent.actions.FindAction(actionId.ToString());
         if (playerAction == null)
         {
-            Debug.LogWarning($"Could not find action with ID '{actionId}' in player {PlayerID}'s actions", this);
+            Debug.LogWarning($"Could not find action with ID '{actionId}' in player {PlayerID}'s actions (Is the correct action map selected?)", this);
             return null;
         }
 
