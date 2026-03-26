@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-public class ScoreManager : MonoBehaviour
+public class ScoreManager : PersistentLazySingleton<ScoreManager>
 {
 
     // This number should ideally match multiplayer controller's maximum number of players.
@@ -24,9 +24,9 @@ public class ScoreManager : MonoBehaviour
     public int[] m_LosePlayerOrder;
     private int m_NextPlayerToLose;
 
-    void Awake()
+    protected override void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        base.Awake();
     }
 
     void Start()
