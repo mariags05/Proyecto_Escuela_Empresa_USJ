@@ -1,3 +1,9 @@
+// *************************************************************** //
+// Script done by Jorge Kojtych
+// Player component that handles player control for the Sumo minigame
+// In progress
+// *************************************************************** //
+
 using System.Collections;
 using UnityEngine;
 
@@ -59,5 +65,7 @@ public class SumoPlayerController : BasePlayerController
             transform.localScale = originalScale * scale;
             yield return null;
         }
+
+        Destroy(gameObject);
     }
 }
