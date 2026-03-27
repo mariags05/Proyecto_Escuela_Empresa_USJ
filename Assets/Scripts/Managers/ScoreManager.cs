@@ -14,14 +14,14 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
     [SerializeField] private int m_MaxPlayers = 4;
 
     // Track the total score of each player. Ideally this is persistent.
-    public int[] m_TotalPlayerScores;
+    private int[] m_TotalPlayerScores = { 0, 0, 0, 0 };
 
     // How many points should the minigame award for each place.
     // First entry is awarded to first place, last entry is awarded to last place and so on.
-    public int[] m_MinigameScoreAwards;
+    private int[] m_MinigameScoreAwards = { 0, 0, 0, 0 };
 
     // First entry is last player, last entry is first player.
-    public int[] m_LosePlayerOrder;
+    private int[] m_LosePlayerOrder = {0, 0, 0, 0};
     private int m_NextPlayerToLose;
 
     protected override void Awake()
@@ -31,8 +31,8 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
 
     void Start()
     {
-        m_TotalPlayerScores = new int[4];
-        m_MinigameScoreAwards = new int[4];
+        //m_TotalPlayerScores = new int[4];
+        //m_MinigameScoreAwards = new int[4];
         m_NextPlayerToLose = 0;
         ResetLoseOrder();
         SetMinigamePointRewards(new int[] {5, 3, 1, 0});
@@ -43,11 +43,19 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
 
     }
 
+    public int[] GetTotalPlayerScores ()
+    {
+        return m_TotalPlayerScores;
+    }
+
     // Call when a player loses.
     public void AddPlayerLose(int player)
     {
         m_LosePlayerOrder[m_NextPlayerToLose] = player;
-        m_NextPlayerToLose++;
+        if (m_NextPlayerToLose < m_MaxPlayers)
+        {
+            m_NextPlayerToLose++;
+        }
     }
 
     public void SetMinigamePointRewards(int[] ints)
@@ -55,9 +63,14 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
         m_MinigameScoreAwards = ints;
     }
 
+    public int[] GetMinigamePointRewards()
+    {
+        return m_MinigameScoreAwards;
+    }
+
     public void ResetLoseOrder()
     {
-        m_LosePlayerOrder = new int[m_MaxPlayers];
+        //m_LosePlayerOrder = { 0, 0, 0, 0};
         m_NextPlayerToLose = 0;
         Debug.Log("Lose order has been reset");
     }
@@ -70,7 +83,7 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
         for (int i = 0; i < m_LosePlayerOrder.Length; i++)
         {
             int m_TargetPlayer = m_LosePlayerOrder[i];
-            int m_PointsToAward = m_MinigameScoreAwards[m_MaxPlayers - i + 1];
+            int m_PointsToAward = m_MinigameScoreAwards[m_MaxPlayers - 1 - i];
             m_TotalPlayerScores[m_TargetPlayer] += m_PointsToAward;
             Debug.Log($"Player {m_TargetPlayer} has been awarded {m_PointsToAward} points for placing {i}");
         }
