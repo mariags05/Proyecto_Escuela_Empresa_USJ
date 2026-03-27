@@ -16,6 +16,8 @@ public class MultiplayerManager : PersistentLazySingleton<MultiplayerManager>
     private BasePlayerController[] m_Players;
     #endregion
 
+    public int MaxPlayers => m_MaxPlayers;
+
     protected override void Awake()
     {
         base.Awake();

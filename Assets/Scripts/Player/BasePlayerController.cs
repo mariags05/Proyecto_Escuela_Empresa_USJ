@@ -9,6 +9,7 @@
 
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInputController))]
 public class BasePlayerController : MonoBehaviour
 {
     public PlayerInputController InputController { get; private set; }
