@@ -16,12 +16,19 @@ public class PlayerInputController : MonoBehaviour
     public PlayerInput PlayerInputComponent { get; private set; }
     public int PlayerID => PlayerInputComponent.playerIndex;
 
+    [Header("Controller Settings")]
+    [SerializeField, Range(0f, 1f)] private float m_Deadzone = 0.1f;
+
     #region Input Actions
     [Header("Input Action References")]
     [SerializeField] private InputActionReference m_MoveActionRef;
     public InputAction MoveAction { get; private set; }
     public Vector2 MoveInput { get; private set; }
     public UnityEvent<Vector2> OnMoveInput;
+
+    [SerializeField] private InputActionReference m_PrimaryActionRef;
+    public InputAction PrimaryAction { get; private set; }
+    public UnityEvent<bool> OnPrimaryAction;
 
     // Add more InputActionReferences and InputActions
     #endregion
@@ -32,6 +39,7 @@ public class PlayerInputController : MonoBehaviour
         PlayerInputComponent = GetComponent<PlayerInput>();
 
         MoveAction = GetPlayerActionByRef(m_MoveActionRef);
+        PrimaryAction = GetPlayerActionByRef(m_PrimaryActionRef);
         // Add more actions here as needed
 
         foreach (var device in PlayerInputComponent.devices)
@@ -43,12 +51,14 @@ public class PlayerInputController : MonoBehaviour
     private void OnEnable()
     {
         SubscribeToAction(MoveAction, OnMovePerformed, OnMoveCanceled);
+        SubscribeToAction(PrimaryAction, OnPrimaryActionPerformed, OnPrimaryActionCanceled);
         // Subscribe to more actions here
     }
 
     private void OnDisable()
     {
         UnsubscribeFromAction(MoveAction, OnMovePerformed, OnMoveCanceled);
+        UnsubscribeFromAction(PrimaryAction, OnPrimaryActionPerformed, OnPrimaryActionCanceled);
         // Unsubscribe from more actions here
     }
     #endregion
@@ -57,16 +67,34 @@ public class PlayerInputController : MonoBehaviour
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         Vector2 moveInput = context.ReadValue<Vector2>();
+        if (moveInput.sqrMagnitude < m_Deadzone * m_Deadzone)
+        {
+            moveInput = Vector2.zero;
+        }
+        moveInput = moveInput.normalized;
+
         MoveInput = moveInput;
         OnMoveInput.Invoke(moveInput);
-        Debug.Log($"Player {PlayerID} Move Input: {moveInput}", this);
+        // Debug.Log($"Player {PlayerID} Move Input: {moveInput}", this);
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         MoveInput = Vector2.zero;
         OnMoveInput.Invoke(Vector2.zero);
-        Debug.Log($"Player {PlayerID} Move Input: Canceled", this);
+        // Debug.Log($"Player {PlayerID} Move Input: Canceled", this);
+    }
+
+    private void OnPrimaryActionPerformed(InputAction.CallbackContext context)
+    {
+        OnPrimaryAction.Invoke(true);
+        // Debug.Log($"Player {PlayerID} Primary Action: Performed", this);
+    }
+
+    private void OnPrimaryActionCanceled(InputAction.CallbackContext context)
+    {
+        OnPrimaryAction.Invoke(false);
+        // Debug.Log($"Player {PlayerID} Primary Action: Canceled", this);
     }
     #endregion
 
@@ -75,8 +103,8 @@ public class PlayerInputController : MonoBehaviour
     {
         if (action != null)
         {
-            action.performed += onPerformed;
-            action.canceled += onCanceled;
+            if (onPerformed != null) action.performed += onPerformed;
+            if (onCanceled != null) action.canceled += onCanceled;
         }
     }
 
@@ -84,8 +112,8 @@ public class PlayerInputController : MonoBehaviour
     {
         if (action != null)
         {
-            action.performed -= onPerformed;
-            action.canceled -= onCanceled;
+            if (onPerformed != null) action.performed -= onPerformed;
+            if (onCanceled != null) action.canceled -= onCanceled;
         }
     }
 
