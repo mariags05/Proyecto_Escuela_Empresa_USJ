@@ -33,6 +33,7 @@ public class SumoHitboxScript : MonoBehaviour
             {
                 // Apply a force to the player away from the center of the hitbox
                 Vector2 direction = (player.transform.position - transform.parent.position).normalized;
+                player.Rigidbody.linearVelocity = Vector2.zero;
                 player.ApplyKnockback(direction, m_KnockbackForce);
             }
         }

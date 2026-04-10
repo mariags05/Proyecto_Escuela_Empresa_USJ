@@ -10,7 +10,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class SumoPlayerController : BasePlayerController
 {
-    private Rigidbody2D m_Rigidbody;
+    public Rigidbody2D Rigidbody { get; private set; }
+
     [SerializeField] private float m_MoveForce = 10f;
     [SerializeField] private float m_RotationSpeed = 100f;
 
@@ -20,8 +21,8 @@ public class SumoPlayerController : BasePlayerController
     protected override void Awake()
     {
         base.Awake();
-        m_Rigidbody = GetComponent<Rigidbody2D>();
-        if (m_Rigidbody == null)
+        Rigidbody = GetComponent<Rigidbody2D>();
+        if (Rigidbody == null)
         {
             Debug.LogWarning("SumoPlayerController has no Rigidbody component.", this);
         }
@@ -45,10 +46,10 @@ public class SumoPlayerController : BasePlayerController
 
     private void FixedUpdate()
     {
-        if (InputController == null || m_Rigidbody == null) return;
+        if (InputController == null || Rigidbody == null) return;
 
         Vector2 input = InputController.MoveInput;
-        m_Rigidbody.AddForce(input * m_MoveForce);
+        Rigidbody.AddForce(input * m_MoveForce);
     }
 
     private void OnEnable()
@@ -69,6 +70,7 @@ public class SumoPlayerController : BasePlayerController
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (!gameObject.activeInHierarchy) return;
         if (collision.gameObject == SumoMinigameManager.Instance.RingGameObject)
         {
             StartCoroutine(DieCoroutine(1f));
@@ -89,9 +91,9 @@ public class SumoPlayerController : BasePlayerController
 
     public void ApplyKnockback(Vector2 direction, float force)
     {
-        if (m_Rigidbody != null)
+        if (Rigidbody != null)
         {
-            m_Rigidbody.AddForce(direction * force, ForceMode2D.Impulse);
+            Rigidbody.AddForce(direction * force, ForceMode2D.Impulse);
         }
     }
 
