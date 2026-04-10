@@ -6,6 +6,7 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class SumoPlayerController : BasePlayerController
@@ -16,6 +17,8 @@ public class SumoPlayerController : BasePlayerController
     [SerializeField] private float m_RotationSpeed = 100f;
 
     [SerializeField] private GameObject m_AttackHitbox;
+
+    public UnityEvent<SumoPlayerController> OnDeath;
 
     #region Unity Methods
     protected override void Awake()
@@ -108,6 +111,8 @@ public class SumoPlayerController : BasePlayerController
             transform.localScale = originalScale * scale;
             yield return null;
         }
+
+        OnDeath?.Invoke(this);
 
         Destroy(gameObject);
     }

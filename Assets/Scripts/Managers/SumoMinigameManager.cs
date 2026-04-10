@@ -5,6 +5,8 @@
 // *************************************************************** //
 
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class SumoMinigameManager : Singleton<SumoMinigameManager>
 {
@@ -13,6 +15,12 @@ public class SumoMinigameManager : Singleton<SumoMinigameManager>
 
     [field: SerializeField] public GameObject RingGameObject { get; private set; }
     public Collider2D RingCollider { get; private set; }
+
+    // Lists to keep track of spawned players
+    private List<SumoPlayerController> m_AlivePlayers = new List<SumoPlayerController>(4);
+    private List<SumoPlayerController> m_DeadPlayers = new List<SumoPlayerController>(4);
+
+    public UnityEvent<IReadOnlyList<SumoPlayerController>> OnGameOver;
 
     private void Start()
     {
@@ -27,7 +35,11 @@ public class SumoMinigameManager : Singleton<SumoMinigameManager>
         for (int i = 0; i < playersToSpawn; i++)
         {
             Vector2 spawnPosition = GetSpawnPosition(i);
-            Instantiate(m_PlayerPrefab, spawnPosition, Quaternion.identity);
+
+            var player = Instantiate(m_PlayerPrefab, spawnPosition, Quaternion.identity);
+            player.name = $"{m_PlayerPrefab.name} {i + 1}";
+            player.OnDeath.AddListener(HandlePlayerDeath);
+            m_AlivePlayers.Add(player);
         }
 
         if (playersToSpawn < MultiplayerManager.Instance.MaxPlayers)
@@ -47,5 +59,33 @@ public class SumoMinigameManager : Singleton<SumoMinigameManager>
         // In case there are not enough spawn points, loop back
         int index = playerIndex % m_SpawnPoints.Length;
         return m_SpawnPoints[index].position;
+    }
+
+    private void HandlePlayerDeath(SumoPlayerController player)
+    {
+        if (m_AlivePlayers.Contains(player))
+        {
+            m_AlivePlayers.Remove(player);
+            m_DeadPlayers.Add(player);
+
+            CheckForGameOver();
+        }
+    }
+
+    private void CheckForGameOver()
+    {
+        if (m_AlivePlayers.Count == 1)
+        {
+            Debug.Log($"Player {m_AlivePlayers[0].name} wins!");
+
+            // Create a new list with all players in order (first is the winner, last is the first to die)
+            List<SumoPlayerController> orderedPlayers = new List<SumoPlayerController>(m_AlivePlayers);
+            for (int i = m_DeadPlayers.Count - 1; i >= 0; i--)
+            {
+                orderedPlayers.Add(m_DeadPlayers[i]);
+            }
+
+            OnGameOver?.Invoke(orderedPlayers);
+        }
     }
 }
