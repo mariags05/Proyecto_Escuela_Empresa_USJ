@@ -18,8 +18,6 @@ public class SumoPlayerController : BasePlayerController
 
     [SerializeField] private GameObject m_AttackHitbox;
 
-    public UnityEvent<SumoPlayerController> OnDeath;
-
     #region Unity Methods
     protected override void Awake()
     {

@@ -8,11 +8,14 @@
 // *************************************************************** //
 
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerInputController))]
 public class BasePlayerController : MonoBehaviour
 {
     public PlayerInputController InputController { get; private set; }
+
+    public UnityEvent<BasePlayerController> OnDeath;
 
     protected virtual void Awake()
     {
