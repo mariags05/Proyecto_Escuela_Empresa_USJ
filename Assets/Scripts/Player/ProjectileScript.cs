@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public abstract class ProjectileScript : MonoBehaviour
+public  class ProjectileScript : MonoBehaviour
 {
     // *********************************************************************** //
     //Script done by [Jorge Cristobal]
@@ -14,9 +14,9 @@ public abstract class ProjectileScript : MonoBehaviour
     
     [SerializeField] private GameObject p_ProyectilePrefab;
 
-    [SerializeField] public List<GameObject> p_ProyectilesList = new List<GameObject>();
-    [SerializeField] public int p_ProyectilePoolSize = 1;
-    [SerializeField] public float p_ProjectileSpeed = 10f;
+    public List<GameObject> p_ProyectilesList = new List<GameObject>();
+    public int p_ProyectilePoolSize = 1;
+    public float p_ProjectileSpeed = 10f;
 
     // [SerializeField]  Animator p_Animator;
     [SerializeField] GameObject p_Prefab;
@@ -57,7 +57,12 @@ public abstract class ProjectileScript : MonoBehaviour
             }
         }
         Debug.Log("Pool lleno: no hay proyectiles disponibles.");
-        return null;
+
+        GameObject p_Projectile = Instantiate(p_ProyectilePrefab);
+        p_Projectile.SetActive(false);
+        p_ProyectilesList.Add(p_Projectile);
+        p_Projectile.transform.parent = transform;
+        return p_Projectile;
 
     }
     
