@@ -44,7 +44,7 @@ public class ScoreManager : PersistentLazySingleton<ScoreManager>
 
     }
 
-    public int[] GetTotalPlayerScores ()
+    public int[] GetTotalPlayerScores()
     {
         return m_TotalPlayerScores;
     }
