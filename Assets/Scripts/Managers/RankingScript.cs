@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,48 +11,39 @@ public class RankingScript : MonoBehaviour
     public ScoreManager m_ScoreManager;
     public Slider[] scoreBoards;
 
-    private int[] oldScore = { 0, 0, 0, 0 };
-    private int[] newScore = { 0, 0, 0, 0 };
+    public int[] oldScore = { 0, 0, 0, 0 };
+    public int[] newScore = { 0, 0, 0, 0 };
+    private float m_Speed = 0.1f;
+   
+    float timeScale = 0f;
 
     
 
     private void Awake()
     {
-        newScore =  m_ScoreManager.GetTotalPlayerScores();
+        // newScore =  m_ScoreManager.GetTotalPlayerScores();
     }
-    void Start()
-    {
-        
-
-        ShowRanking(oldScore, newScore, scoreBoards);
-        
-
-
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
         
+        StartCoroutine (RankingView(scoreBoards, oldScore, newScore));
     }
 
-    public void ShowRanking(int[] oldScoreArray, int[] newScoreArray, Slider[] scoreBoard)
+    
+    private IEnumerator RankingView(Slider[] score, int[] old, int[] actual) 
     {
         
-
-        for (int i = 0; i < scoreBoard.Length; i++)
+       
+        for(int i = 0;i < score.Length; i++)
         {
-            
-            
-            scoreBoard[i].value = Mathf.Lerp(oldScoreArray[i], newScoreArray[i], 1);
-
-            oldScore[i] = newScoreArray[i];
-
-        }   
-        
-
+            while (timeScale < 1)
+            {
+                timeScale += Time.deltaTime * m_Speed;
+                score[i].value = Mathf.Lerp(old[i], actual[i], timeScale);
+            }
+            timeScale = 0f;
+            yield return new WaitForSeconds(2);
+        }
+      
     }
-
-
 }
