@@ -6,12 +6,10 @@
 
 using UnityEngine;
 
-public class SumoMinigameManager : BaseMinigameManager<SumoPlayerController>
+public class SumoMinigameManager : BaseMinigameManager<SumoMinigameManager, SumoPlayerController>
 {
     [field: SerializeField] public GameObject RingGameObject { get; private set; }
     public Collider2D RingCollider { get; private set; }
-
-    public new static SumoMinigameManager Instance => BaseMinigameManager<SumoPlayerController>.Instance as SumoMinigameManager;
 
     protected override void Start()
     {

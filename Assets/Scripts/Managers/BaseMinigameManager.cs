@@ -2,9 +2,8 @@
 // Script done by Jorge Kojtych
 // Singleton base manager for minigames, responsible for spawning players and managing game state
 // To create a new minigame manager:
-// 1. Create a new script that inherits from BaseMinigameManager<TPlayer>, where TPlayer is the specific player controller for that minigame
+// 1. Create a new script that inherits from BaseMinigameManager<TManager, TPlayer>, where TManager is your manager type and TPlayer is the specific player controller for that minigame
 // 2. Call base.Start() in the Start method if you override it
-// 3. Add "public new static YourMinigameManager Instance => BaseMinigameManager<YourPlayerController>.Instance as YourMinigameManager;"
 // If in doubt, look at SumoMinigameManager for an example
 // Done?
 // *************************************************************** //
@@ -13,7 +12,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-public class BaseMinigameManager<TPlayer> : Singleton<BaseMinigameManager<TPlayer>> where TPlayer : BasePlayerController
+public class BaseMinigameManager<TManager, TPlayer> : Singleton<TManager>
+    where TManager : MonoBehaviour
+    where TPlayer : BasePlayerController
 {
     [SerializeField] private Transform[] m_SpawnPoints;
     [SerializeField] private TPlayer m_PlayerPrefab;
