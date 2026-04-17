@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
-public class TankPlayerControler: MonoBehaviour
-{ 
+public class TankPlayerControler : MonoBehaviour
+{
     //Script done by [Jorge Cristobal]
     //Script for managin the player movement and shoot actions
 
@@ -18,14 +18,14 @@ public class TankPlayerControler: MonoBehaviour
     private Vector2 m_Moving;
 
     private float m_CurrentSpeed;
-    private float m_MaxSpeed= 10f;
-                     
+    private float m_MaxSpeed = 10f;
+
     private float m_CurrentRotationalSpeed;
     private float m_MaxRotationalSpeed = 2f;
 
-    [SerializeField] private float m_Acceleration = 20f;       
-    [SerializeField] private float m_AngularAcceleration = 20f; 
-    [SerializeField] private float m_LinearDamping = 10f;       
+    [SerializeField] private float m_Acceleration = 20f;
+    [SerializeField] private float m_AngularAcceleration = 20f;
+    [SerializeField] private float m_LinearDamping = 10f;
     [SerializeField] private float m_AngularDamping = 10f;
 
     [SerializeField] private float m_linearDecceleration = -4f;
@@ -43,15 +43,15 @@ public class TankPlayerControler: MonoBehaviour
     void Start()
     {
         m_TankRb1 = GetComponent<Rigidbody>();
-        
+
         m_PlayerInput.SwitchCurrentActionMap("Tank");
     }
 
-   
+
     void Update()
     {
         //InputAction.CallbackContext action;
-       // Movement(action);
+        // Movement(action);
     }
 
     // Solo almacena el valor; no aplica física aquí
@@ -63,20 +63,20 @@ public class TankPlayerControler: MonoBehaviour
     private void FixedUpdate()
     {
         // ROTACIÓN: eje horizontal (m_Moving.x) -> AddTorque sobre transform.up
-       /* m_TankRb1.AddTorque(
-            m_Moving.x * m_MaxRotationalSpeed * transform.up * m_angularDecceleration,
-            ForceMode.Acceleration
-        );*/
+        /* m_TankRb1.AddTorque(
+             m_Moving.x * m_MaxRotationalSpeed * transform.up * m_angularDecceleration,
+             ForceMode.Acceleration
+         );*/
 
         // MOVIMIENTO: eje vertical (m_Moving.y) -> AddForce en la dirección que mira el tanque
-         m_TankRb1.AddForce(
-             transform.up * -m_Moving.y * m_MaxSpeed * m_linearDecceleration,
-             ForceMode.Acceleration 
-         );
+        m_TankRb1.AddForce(
+            transform.up * -m_Moving.y * m_MaxSpeed * m_linearDecceleration,
+            ForceMode.Acceleration
+        );
         m_TankRb1.transform.Rotate(transform.forward, m_AngularDamping * Time.deltaTime * -m_Moving.x);
     }
 
-   
+
     //Funcion para disparar una proyectil
     public void ShootingAction(InputAction.CallbackContext action)
     {
@@ -84,31 +84,31 @@ public class TankPlayerControler: MonoBehaviour
 
         //if (Input.GetKeyDown(KeyCode.Space) && m_ShootTimer <= 0f)
         //{
-        if (m_isShooting) 
+        if (m_isShooting)
         {
             return;
         }
-            GameObject projectile = ProjectileScript.Instance.RequestProyectile();
+        GameObject projectile = ProjectileScript.Instance.RequestProyectile();
 
-            if (projectile != null)
-            {
-                // Spawn en la punta del cañón; si no hay CannonTip, usa el centro del tanque
-                Vector2 spawnPos = m_CannonTip != null ? m_CannonTip.position  : transform.position;
+        if (projectile != null)
+        {
+            // Spawn en la punta del cañón; si no hay CannonTip, usa el centro del tanque
+            Vector2 spawnPos = m_CannonTip != null ? m_CannonTip.position : transform.position;
 
-                projectile.transform.position = spawnPos;
-                projectile.transform.rotation = transform.rotation;
+            projectile.transform.position = spawnPos;
+            projectile.transform.rotation = transform.rotation;
 
-                // Lanza el proyectil en la dirección en que mira el tanque (transform.up)
-                Rigidbody rb = projectile.GetComponent<Rigidbody>();
-                if (rb != null) { rb.linearVelocity = transform.up * ProjectileScript.Instance.p_ProjectileSpeed; }
-                m_ShootTimer = m_CoolDownShoot;
-                m_isShooting = true;
-                // Get the ProjectileBehavior from the spawned projectile, not from the tank
-                m_projectile = projectile.GetComponent<ProjectileBehavior>();
+            // Lanza el proyectil en la dirección en que mira el tanque (transform.up)
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            if (rb != null) { rb.linearVelocity = transform.up * ProjectileScript.Instance.p_ProjectileSpeed; }
+            m_ShootTimer = m_CoolDownShoot;
+            m_isShooting = true;
+            // Get the ProjectileBehavior from the spawned projectile, not from the tank
+            m_projectile = projectile.GetComponent<ProjectileBehavior>();
 
-                if (m_projectile != null) { m_projectile.p_shootingDeacttivationEvent.AddListener(ReactEventShooting); }
-            }
-       
+            if (m_projectile != null) { m_projectile.p_shootingDeacttivationEvent.AddListener(ReactEventShooting); }
+        }
+
         //}
     }
 
@@ -118,5 +118,5 @@ public class TankPlayerControler: MonoBehaviour
         m_projectile.p_shootingDeacttivationEvent.RemoveListener(ReactEventShooting);
     }
 
-   
+
 }

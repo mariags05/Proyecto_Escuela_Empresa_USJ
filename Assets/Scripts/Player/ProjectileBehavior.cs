@@ -19,7 +19,7 @@ public class ProjectileBehavior : MonoBehaviour
     [SerializeField] private float p_SpeedReductionCoeficient = 0.45f;
 
     private int p_CurrentCollisions = 0;
-    [SerializeField]private Rigidbody p_Rb;
+    [SerializeField] private Rigidbody p_Rb;
 
     private void Awake()
     {
@@ -27,9 +27,9 @@ public class ProjectileBehavior : MonoBehaviour
     }
     private void Update()
     {
-        if(p_Rb.linearVelocity.magnitude < p_MinSpeedToLive || p_CurrentCollisions > 2)
+        if (p_Rb.linearVelocity.magnitude < p_MinSpeedToLive || p_CurrentCollisions > 2)
         {
-            gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
         }
     }
     public void ResetCollisions()
@@ -39,11 +39,13 @@ public class ProjectileBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Tank")
+        if (collision.gameObject.tag == "Player")
         {
             // Impacta al jugador: destruye el jugador y devuelve el proyectil al pool
             Destroy(collision.gameObject);
             gameObject.SetActive(false);
+            Debug.Log("Papaya");
+            return;
         }
         else
         {
@@ -51,7 +53,7 @@ public class ProjectileBehavior : MonoBehaviour
             p_Rb.linearVelocity *= p_SpeedReductionCoeficient;
             p_CurrentCollisions++;
 
-            
+
         }
     }
     private void OnDisable()
