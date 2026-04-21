@@ -181,7 +181,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 1856789880, guid: 0537fd033e05f7d4db0f48e1049d8b36, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -644,6 +644,9 @@ MonoBehaviour:
   - {fileID: 1503135928}
   - {fileID: 1485953295}
   m_PlayerPrefab: {fileID: -4644611175341709461, guid: 7a72f4cdc0b2440edbf0a1f76eeea1be, type: 3}
+  OnGameOver:
+    m_PersistentCalls:
+      m_Calls: []
   <RingGameObject>k__BackingField: {fileID: 227940204}
 --- !u!1 &2034679800
 GameObject:
